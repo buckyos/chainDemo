@@ -50,5 +50,16 @@
             "--port", "18089",
             "--run", "chain.getBalance()"
         ]
+    },
+    "test":{
+        "type": "test",
+        "program": {
+            "windows":  "./node_modules/bin/mocha",
+            "linux": "./node_modules/.bin/mocha"
+        },
+        "args":[
+            "./dist/coin2/test.js",
+            "--timeout", "600000"
+        ]
     }
 }

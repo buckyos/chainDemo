@@ -22,7 +22,9 @@ describe('coin', () => {
         async function __test() {
             const dataDir = path.join(__dirname, '../chain');
             
-            const {err,session} = await createIndependSession({logger},dataDir);
+            const r = await createIndependSession({logger},dataDir);
+            const err = r.err;
+            session = r.session!;
 
             assert(!err, 'createIndependSession failed', stringifyErrorCode(err));
 

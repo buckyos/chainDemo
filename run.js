@@ -1,6 +1,7 @@
 const child_process = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
 class Util{
     static searchAllRelativeFile(srcPath, list, filter, mapper, options={includeSelf:true,level:0}){
@@ -59,12 +60,34 @@ class Util{
         }
     }
 
-    static run(item){
+    static run(item,show){
+
+        //
+        // description
+        // ===========
+        // * zh-ch: 添加双引号，防止路径中有空格
+        // * en: add quote to avoid spaces in path
+        //
+        const quote = (v)=>`"${v}"`;
+
         let { program, args } = item;
+
+        if(program.windows!=null){
+            if(os.platform()==='win32'){
+                program = program.windows;
+            }else{
+                program = program.linux;
+            }
+            console.log(os.platform());
+        }
+
+        if(item.type==='test'){
+            args[0] = quote(args[0]);
+        }
         
         const executor=[];
         if(path.extname(program)==='.js'){
-            program = `"${program}"`;
+            program = quote(program);
             executor.push('node');
         }
         
@@ -85,7 +108,7 @@ class Util{
                 fixArgs.push(arg);
             }else{
                 if(needQuote){
-                    fixArgs.push(`"${arg}"`);
+                    fixArgs.push(quote(arg));
                 }else{
                     fixArgs.push(arg);
                 }
@@ -106,8 +129,9 @@ class Util{
         console.log('----------------');
         console.log('');
         
-        Util.execCmdSync(cmd,__dirname);
-       
+        if(!show){
+            Util.execCmdSync(cmd,__dirname);
+        }
     }
 
     static execCmdSync(cmd, workspace) {
@@ -161,7 +185,8 @@ function main(){
     // 2. parse commands
     let options = CommandLine.parse({
         'chain': null,
-        'action': null
+        'action': null,
+        'show': false
     });
 
     if(options.chain==null||options.action==null){
@@ -177,7 +202,7 @@ function main(){
     for(const item of chainConfigs){
         //console.log(JSON.stringify(item,null,2));
         if(item.chain===options.chain){
-            Util.run(item.config[options.action]);
+            Util.run(item.config[options.action],options.show);
             return;
         }
     }
