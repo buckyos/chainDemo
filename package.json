@@ -1,0 +1,32 @@
+{
+  "name": "chainDemos",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "doc": "../doc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "blockchain-sdk": "^0.1.102",
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-typescript": "^5.0.0-alpha.3"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/fs-extra": "^5.0.2",
+    "@types/lodash": "^4.14.107",
+    "@types/mocha": "^5.0.0",
+    "@types/node": "^9.6.4",
+    "@types/sqlite3": "^3.1.3",
+    "@types/winston": "^2.3.9",
+    "chai": "^4.1.2",
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-typescript": "^4.0.2",
+    "mocha": "^5.1.0",
+    "typescript": "^2.8.1"
+  }
+}
