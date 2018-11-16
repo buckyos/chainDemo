@@ -7,9 +7,15 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
-            "program": "${file}",
-            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outputCapture": "std",
+            "name": "debug test for vscode-zh-cn",
+            "program": "${workspaceFolder}/node_modules/.bin/_mocha",
+            "preLaunchTask": "tsc: 构建 - tsconfig.json",
+            "args": [
+                "dist/coin/test/test.js",
+                "--timeout",
+                "1000000000"
+            ],
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"
             ]
@@ -18,7 +24,7 @@
             "type": "node",
             "request": "launch",
             "outputCapture": "std",
-            "name": "debug test",
+            "name": "debug test for vscode-en",
             "program": "${workspaceFolder}/node_modules/.bin/_mocha",
             "preLaunchTask": "tsc: build - tsconfig.json",
             "args": [
@@ -34,11 +40,27 @@
             "type": "node",
             "request": "launch",
             "outputCapture": "std",
-            "name": "windows debug test",
+            "name": "debug test for windows-vscode-zh-cn",
+            "program": "${workspaceFolder}\\node_modules\\mocha\\bin\\_mocha",
+            "preLaunchTask": "tsc: 构建 - tsconfig.json",
+            "args": [
+                "dist/coin/test/test.js",
+                "--timeout",
+                "1000000000"
+            ],
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "outputCapture": "std",
+            "name": "debug test for windows-vscode-en",
             "program": "${workspaceFolder}\\node_modules\\mocha\\bin\\_mocha",
             "preLaunchTask": "tsc: build - tsconfig.json",
             "args": [
-                "dist/blockchain-sdk/test/chain/test_sync.js",
+                "dist/coin/test/test.js",
                 "--timeout",
                 "1000000000"
             ],

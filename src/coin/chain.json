@@ -54,7 +54,7 @@
     "test":{
         "type": "test",
         "program": {
-            "windows":  "./node_modules/bin/mocha",
+            "windows":  "./node_modules/.bin/mocha.cmdnhjj∆ `q   ",
             "linux": "./node_modules/.bin/mocha"
         },
         "args":[

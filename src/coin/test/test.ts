@@ -52,7 +52,7 @@ describe('coin', () => {
             // 调用getBalance查询余额，挖矿奖励给index为0的账户，所以查询该账户
             const gbr = await session.view({method: 'getBalance', params: {address: session!.getAccount(0)}});
 
-            // 此时，账户0里调钱应该等于:
+            // 此时，账户0里的金额应该等于:
             // 1. session初始化时，调用合约里handler.onMinerWage给coinbase=0的账户发奖励，也就是10000
             // 2. 调用session!.wage()时，调用合约里handler.onMinerWage发奖励，也就是10000
             // 所以一共是 10000*2

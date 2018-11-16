@@ -9,10 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "blockchain-sdk": "^0.1.102",
+    "blockchain-sdk": "^0.1.106",
     "gulp": "^3.9.1",
     "gulp-sourcemaps": "^2.6.4",
-    "gulp-typescript": "^5.0.0-alpha.3"
+    "gulp-typescript": "^5.0.0-alpha.3",
+    "upath": "^1.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",

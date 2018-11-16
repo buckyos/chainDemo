@@ -6,3 +6,4 @@ data_*
 yarn.lock
 .projectile
 .DS_Store
+log

@@ -1,10 +1,10 @@
 [TOC]
 # 命令行格式
-> create|miner|peer --option [value] [--option [value], ...]
+> chain_host create|miner|peer --option [value] [--option [value], ...]
 
 # <a name="create">create 命令</a> 
 + 从应用包创建genesis发布包
-> create --package $path --dataDir $path --genesisConfig $path \[--externalHandler\] \[--loggerConsole\]  \[--loggerLevel debug|info|warn|error\]
+> chain_host create --package $path --dataDir $path --genesisConfig $path \[--externalHandler\] \[--loggerConsole\]  \[--loggerLevel debug|info|warn|error\]
 + 选项
     + package 应用包路径
     + dataDir genesis发布包的输出路径
@@ -15,7 +15,7 @@
 
 # <a name="miner">miner命令</a>
 + 运行miner实例
-> miner --dataDir $path --genesis $path \[--forceclean\] \[--executor inprocess|interprocess\] \[--loggerConsole\] \[--loggerLevel debug|info|warn|error\] \[--net |tcp|bdt\] \[--netoption \] \[--ignoreBan\] \[--feelimit\] \[--rpchost\]\[--rpcport\]
+> chain_host miner --dataDir $path --genesis $path \[--forceclean\] \[--executor inprocess|interprocess\] \[--loggerConsole\] \[--loggerLevel debug|info|warn|error\] \[--net |tcp|bdt\] \[--netoption \] \[--ignoreBan\] \[--feelimit\] \[--rpchost\]\[--rpcport\]
 + 选项
     + genesis genesis发布包路径
     + dataDir 实例的数据目录路径
@@ -31,7 +31,7 @@
   
 # peer命令
 + 运行peer实例
-> peer --dataDir $path --genesis $path \[--forclean\] \[--executor inprocess|interprocess\] \[--loggerConsole\] \[--loggerLevel debug|info|warn|error\] \[--net |tcp|bdt\] \[--netoption \] \[--ignoreBan\] \[--rpchost\]\[--rpcport\]
+> chain_host peer --dataDir $path --genesis $path \[--forclean\] \[--executor inprocess|interprocess\] \[--loggerConsole\] \[--loggerLevel debug|info|warn|error\] \[--net |tcp|bdt\] \[--netoption \] \[--ignoreBan\] \[--rpchost\]\[--rpcport\]
 + 选项
     + genesis 与[miner](#miner)一致
     + dataDir 与[miner](#miner)一致

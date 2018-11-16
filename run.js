@@ -1,6 +1,6 @@
 const child_process = require('child_process');
 const fs = require('fs');
-const path = require('path');
+const path = require('upath');
 const os = require('os');
 
 class Util{
@@ -60,8 +60,27 @@ class Util{
         }
     }
 
-    static run(item,show){
+    static run(chainConfig, sessionName, show, forceclean){
+        const session = chainConfig[sessionName];
+        if(session.type==='group'){
+            for(let group of session.groups){
 
+                const subSession = chainConfig[group.session];
+                subSession.sync = group.sync;
+                if(forceclean){
+                    subSession.args.push('--forceclean');
+                }
+                Util.runSession(sessionName, subSession,show);
+            }
+        }else{
+            if(forceclean){
+                session.args.push('--forceclean');
+            }
+            Util.runSession(sessionName, session,show);
+        }
+    }
+
+    static runSession(sessionName, session, show){
         //
         // description
         // ===========
@@ -70,7 +89,7 @@ class Util{
         //
         const quote = (v)=>`"${v}"`;
 
-        let { program, args } = item;
+        let { program, args } = session;
 
         if(program.windows!=null){
             if(os.platform()==='win32'){
@@ -81,7 +100,7 @@ class Util{
             console.log(os.platform());
         }
 
-        if(item.type==='test'){
+        if(session.type==='test'){
             args[0] = quote(args[0]);
         }
         
@@ -118,27 +137,60 @@ class Util{
         const scripts = [...executor, program, ...fixArgs];
         const cmd = scripts.join(' ');
 
-        console.log('');
-        console.log('----------------');
-        console.log('will run script:');
-        console.log('----------------');
-        console.log(cmd);
-        console.log('');
-        console.log('----------------');
-        console.log('logs:');
-        console.log('----------------');
-        console.log('');
+        
         
         if(!show){
-            Util.execCmdSync(cmd,__dirname);
+            console.log('');
+            console.log('=>will run session script:');
+            console.log(cmd);
+            console.log('');
+            console.log('=>logs:');
+            console.log('');
+
+            if(session.sync===false){
+                Util.execCmd(sessionName, cmd, __dirname);
+            }else{
+                Util.execCmdSync(sessionName, cmd, __dirname);
+            }
+        }else{
+            console.log('');
+            console.log('----------------');
+            console.log('=>the session script is:');
+            console.log('----------------');
+            console.log(cmd);
+            console.log('');
         }
     }
 
-    static execCmdSync(cmd, workspace) {
+    static execCmdSync(tag, cmd, workspace) {
         let cwd = workspace ? workspace : __dirname;
         try {
             console.log(`current workspace:${cwd}`);
             child_process.execSync(cmd, { stdio: 'inherit', cwd: cwd, env: process.env });
+            return null; 
+        } catch (e) {
+            return e.message;
+        }
+    }
+
+    static execCmd(tag, cmd, workspace) {
+        let cwd = workspace ? workspace : __dirname;
+        try {
+            console.log(`current workspace:${cwd}`);
+            child_process.exec(cmd, { stdio: 'inherit', cwd: cwd, env: process.env },(error, stdout, stderr) => {
+                if (error) {
+                  console.error(`exec error: ${error}`);
+                  return;
+                }
+
+                if(stdout){
+                    console.log(`${tag}-[info]: ${stdout}`);
+                }
+                
+                if(stderr){
+                    console.log(`${tag}-[error]: ${stderr}`);
+                }
+            });
             return null; 
         } catch (e) {
             return e.message;
@@ -150,7 +202,9 @@ class CommandLine {
     static parse(options) {
         for (let i = 2; i < process.argv.length; i++) {
             for (let key in options) {
-                if (process.argv[i] === ("-" + key)) {
+                const level1Option = process.argv[i] === ("-" + key);
+                const level2Option = process.argv[i] === ("--" + key);
+                if (level1Option||level2Option) {
                     let next = process.argv[i + 1];
                     if (next == null || next.startsWith('-')) {
                         options[key] = true;
@@ -185,13 +239,14 @@ function main(){
     // 2. parse commands
     let options = CommandLine.parse({
         'chain': null,
-        'action': null,
-        'show': false
+        'session': null,
+        'show': false,
+        'forceclean': null,
     });
 
-    if(options.chain==null||options.action==null){
-        console.log('## useage: node chain.js -chain ${chainName} -action ${actionName}');
-        console.log('* example: node chain.js -chain coin -action create');
+    if(options.chain==null||options.session==null){
+        console.log('## useage: node chain.js -chain ${chainName} -session ${sessionName}');
+        console.log('* example: node chain.js -chain coin -session create');
         console.log('');
         return;
     }else{
@@ -202,7 +257,7 @@ function main(){
     for(const item of chainConfigs){
         //console.log(JSON.stringify(item,null,2));
         if(item.chain===options.chain){
-            Util.run(item.config[options.action],options.show);
+            Util.run(item.config, options.session, options.show, options.forceclean);
             return;
         }
     }
