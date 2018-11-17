@@ -180,23 +180,6 @@ function main() {
         });
     }
 
-    async function r() {
-        runEnv.register('12nD5LgUnLZDbyncFnoFB43YxhSFsERcgQ', '1');
-        await wait();
-        runEnv.register('1EYLLvMtXGeiBJ7AZ6KJRP2BdAQ2Bof79', '1');
-        await wait();
-        runEnv.register('1EDUHDo4tch21Go1qEyTWt5JSUgsGg4H7p', '1');
-        await wait();
-        runEnv.register('18c54BbYrHDtwZeY8i28PxNQtkWiYCNLQN', '1');
-        await wait();
-        runEnv.register('17SXcUf89AZYCPpe5wVdCYM5NbMgXhmqVt', '1');
-        await wait();
-        runEnv.register('15tETqMvoe3HpbU7GjAW9LZaZgfaJQCwd4', '1');
-        await wait();
-        console.log(`=============end`);
-    }
-    r();
-
     let cmd = command.options.get('run');
     if (cmd) {
         runCmd(cmd);

@@ -116,11 +116,7 @@
             },
             {
                 "session": "miner1",
-                "sync": false
-            },
-            {
-                "session": "miner2",
-                "sync": false
+                "sync": true
             }
         ]
     }
