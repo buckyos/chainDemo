@@ -5,6 +5,7 @@
     * [1.2. Hello, BlockChain](1.QuickStart/1.2.Hello,BlockChain.md)
     * [1.3. Introduction to DApp](1.QuickStart/1.3.IntroductionToDApp.md)
     * [1.4. How to Debug DApp](1.QuickStart/1.4.HowtoDebugDApp.md)
+    * [1.5. Understanding Test](1.QuickStart/1.5.UnderstandingTest.md)
 * [2. Learn ChainSDK](2.LearnChainSDK/2.1.IntroductiontoChainSDK.md)
     * [2.1. Introduction to ChainSDK](2.LearnChainSDK/2.1.IntroductiontoChainSDK.md)
 * [3. Examples](3.Examples/3.1.CreateBlockChainusePoW.md)
