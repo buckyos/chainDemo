@@ -195,15 +195,7 @@ function main() {
             showHelp();
         }
     }
-
-    async function wait() {
-        return await new Promise((v) => {
-            setTimeout(() => {
-                v(true);
-            }, 1000);
-        });
-    }
-
+    
     let cmd = command.options.get('run');
     if (cmd) {
         runCmd(cmd);
