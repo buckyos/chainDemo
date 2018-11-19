@@ -163,12 +163,36 @@ function main() {
         },
     };
 
+    let runEnvMethods=[
+        ``,
+        `## useable methods`,
+        `* chain.getAddress()`,
+        `* chain.getBalance(address: string)`,
+        `* chain.transferTo(to: string, amount: string, fee: string)`,
+        `* chain.register(address: string, fee: string)`,
+        `* chain.unregister(address: string, fee: string)`,
+        `* chain.getMiners()`,
+        `* chain.isMiner(address: string)`,
+        ``
+    ];
+
+    let showHelp = ()=>{
+        for(let h of runEnvMethods){
+            console.log(h)
+        }
+    };
+
     function runCmd(_cmd: string) {
         let chain = runEnv;
         try {
-            eval(_cmd);
+            if(_cmd==='help'){
+                showHelp();
+            }else{
+                eval(_cmd);
+            }
         } catch (e) {
-            console.error('e=' + e.message);
+            console.error(e.message);
+            showHelp();
         }
     }
 

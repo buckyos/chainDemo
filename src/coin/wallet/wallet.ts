@@ -96,12 +96,32 @@ function main() {
         },
     };
 
+    let runEnvMethods=[
+        ``,
+        `## useable methods`,
+        `* chain.getAddress()`,
+        `* chain.getBalance(address: string)`,
+        `* chain.transferTo(to: string, amount: string, fee: string)`,
+        ``
+    ];
+
+    let showHelp = ()=>{
+        for(let h of runEnvMethods){
+            console.log(h)
+        }
+    };
+
     function runCmd(cmd: string) {
         let chain = runEnv;
         try {
-            eval(cmd);
+            if(cmd==='help'){
+                showHelp();
+            }else{
+                eval(cmd);
+            }
         } catch (e) {
             console.error(e.message);
+            showHelp();
         }
     }
     
