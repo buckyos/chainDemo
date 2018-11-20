@@ -61,7 +61,7 @@ addViewMethod(name: string, listener: ViewListener)
 type TxListener = (context: any, params: any) => Promise<ErrorCode>;
 ```
 参数
-+ context 链的[context](./ref_context)对象
++ context 链的[context](./ref_context.html)对象
 + params transcation的input参数
 
 返回值
@@ -76,7 +76,7 @@ type TxPendingChecker = (tx: Transaction) => ErrorCode;
 用于判定一个transcation是否应该上链，开发者可以在这个函数中做一些上下文无关的检查，比如检查Transcation的input合法性，value和fee是否符合一些业务标准等。判定为不符合的tx可以在函数中返回非0值，该tx即会被miner抛弃，不会上链
 
 参数
-+ tx [transcation](./ref_client#ValueTransaction)实例
++ tx [transcation](./ref_client.html#ValueTransaction)实例
 
 返回值
 
@@ -91,7 +91,7 @@ view method的响应函数，client的view调用和chain的view调用会触发�
 
 参数
 
-+ context [viewcontext](./ref_context#ViewContext)实例
++ context [viewcontext](./ref_context.html#ViewContext)实例
 + params view的params参数
 
 返回值
