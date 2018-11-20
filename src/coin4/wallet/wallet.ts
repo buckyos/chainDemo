@@ -1,6 +1,6 @@
 import * as readline from 'readline';
 import * as process from 'process';
-import {ChainClient, BigNumber, ErrorCode, addressFromSecretKey, ValueTransaction, initLogger } from 'blockchain-sdk';
+import {ChainClient, BigNumber, addressFromSecretKey, ValueTransaction, initLogger } from 'blockchain-sdk';
 import {parseCommand, initUnhandledRejection} from '../../util/util';
 
 const logger = initLogger({loggerOptions: {console: false}});
@@ -58,7 +58,7 @@ function main() {
     let runEnv = {
         getAddress: () => {
             console.log(address);
-        }, 
+        },
         getBalance: async (_address: string) => {
             if (!_address) {
                 _address = address;
@@ -94,29 +94,87 @@ function main() {
             watchingTx.push(tx.hash!);
             console.log(`send transferTo tx: ${tx.hash}`);
         },
+        createToken: async (tokenid: string, preBalance: {address: string, amount: string}[], fee: string) => {
+            let tx = new ValueTransaction();
+            tx.method = 'createToken',
+            tx.fee = new BigNumber(fee);
+            tx.input = {tokenid, preBalance};
+            let {err, nonce} = await chainClient.getNonce({address});
+            if (err) {
+                console.error(`createToken failed for ${err}`);
+                return ;
+            }
+            tx.nonce = nonce! + 1;
+            tx.sign(secret);
+            let sendRet = await chainClient.sendTransaction({tx});
+            if (sendRet.err) {
+                console.error(`createToken failed for ${err}`);
+                return ;
+            }
+            watchingTx.push(tx.hash!);
+            console.log(`send createToken tx: ${tx.hash}`);
+        },
+
+        transferTokenTo: async (tokenid: string, amount: string, fee: string) => {
+            let tx = new ValueTransaction();
+            tx.method = 'createToken',
+            tx.fee = new BigNumber(fee);
+            tx.input = {tokenid, amount};
+            let {err, nonce} = await chainClient.getNonce({address});
+            if (err) {
+                console.error(`transferTokenTo failed for ${err}`);
+                return ;
+            }
+            tx.nonce = nonce! + 1;
+            tx.sign(secret);
+            let sendRet = await chainClient.sendTransaction({tx});
+            if (sendRet.err) {
+                console.error(`transferTokenTo failed for ${err}`);
+                return ;
+            }
+            watchingTx.push(tx.hash!);
+            console.log(`send transferTokenTo tx: ${tx.hash}`);
+        },
+        getTokenBalance: async (_address: string) => {
+            if (!_address) {
+                _address = address;
+            }
+            let ret = await chainClient.view({
+                method: 'getTokenBalance',
+                params: {address: _address}
+            });
+            if (ret.err) {
+                console.error(`get token balance failed for ${ret.err};`);
+                return ;
+            }
+            console.log(`${ret.value!}`);
+        },
     };
 
-    let runEnvMethods=[
+    let runEnvMethods = [
         ``,
         `## useable methods`,
         `* chain.getAddress()`,
         `* chain.getBalance(address: string)`,
         `* chain.transferTo(to: string, amount: string, fee: string)`,
+        `* chain.createToken(tokenid: string, preBalance: {address: string, amount: string}[], fee: string)`,
+        `* chain.transferTokenTo(to: string, amount: string, fee: string)`,
+        `* chain.getTokenBalance(address: string)`,
         ``
     ];
 
-    let showHelp = ()=>{
-        for(let h of runEnvMethods){
-            console.log(h)
+    let showHelp = () => {
+        for (let h of runEnvMethods) {
+            console.log(h);
         }
     };
 
     function runCmd(cmd: string) {
         let chain = runEnv;
         try {
-            if(cmd==='help'){
+            if (cmd === 'help') {
                 showHelp();
-            }else{
+            } else {
                 eval(cmd);
             }
         } catch (e) {
@@ -124,7 +182,7 @@ function main() {
             showHelp();
         }
     }
-    
+
     let c = command.options.get('run');
     if (c) {
         console.log('');
@@ -132,7 +190,7 @@ function main() {
         runCmd(c);
     }
 
-    let rl = readline.createInterface({input: process.stdin, output:process.stdout, prompt:'>'});
+    let rl = readline.createInterface({input: process.stdin, output: process.stdout, prompt: '>'});
     rl.on('line', (cmd: string) => {
         runCmd(cmd);
     });

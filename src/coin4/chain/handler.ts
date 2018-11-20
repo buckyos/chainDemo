@@ -1,6 +1,12 @@
-import { ErrorCode, BigNumber, ValueViewContext, ValueTransactionContext, ValueHandler } from 'blockchain-sdk';
+import { ErrorCode, BigNumber, ValueViewContext, ValueTransactionContext, ValueHandler, IReadableKeyValue } from 'blockchain-sdk';
 
 export function registerHandler(handler: ValueHandler) {
+
+    async function getTokenBalance(balanceKv: IReadableKeyValue, address: string): Promise<BigNumber> {
+        let retInfo = await balanceKv.get(address);
+        return retInfo.err === ErrorCode.RESULT_OK ? retInfo.value : new BigNumber(0);
+    }
+
     handler.addViewMethod('getBalance', async (context: ValueViewContext, params: any): Promise<any> => {
         return await context.getBalance(params.address);
     });
@@ -8,10 +14,9 @@ export function registerHandler(handler: ValueHandler) {
     handler.addTX('transferTo', async (context: ValueTransactionContext, params: any): Promise<ErrorCode> => {
         return await context.transferTo(params.to, context.value);
     });
-    
-    handler.addTX('createToken', async (context: DposTransactionContext, params: any): Promise<ErrorCode> => {
+
+    handler.addTX('createToken', async (context: ValueTransactionContext, params: any): Promise<ErrorCode> => {
         context.cost(context.fee);
-        // 这里是不是会有一些检查什么的，会让任何人都随便创建Token么?
 
         // 必须要有tokenid，一条链上tokenid不能重复
         if (!params.tokenid) {
@@ -33,7 +38,7 @@ export function registerHandler(handler: ValueHandler) {
         return ErrorCode.RESULT_OK;
     });
 
-    handler.addTX('transferTokenTo', async (context: DposTransactionContext, params: any): Promise<ErrorCode> => {
+    handler.addTX('transferTokenTo', async (context: ValueTransactionContext, params: any): Promise<ErrorCode> => {
         context.cost(context.fee);
         let tokenkv = await context.storage.getReadWritableKeyValue(params.tokenid);
         if (tokenkv.err) {
@@ -50,7 +55,7 @@ export function registerHandler(handler: ValueHandler) {
         return ErrorCode.RESULT_OK;
     });
 
-    handler.addViewMethod('getTokenBalance', async (context: DposViewContext, params: any): Promise<BigNumber> => {
+    handler.addViewMethod('getTokenBalance', async (context: ValueViewContext, params: any): Promise<BigNumber> => {
         let balancekv = await context.storage.getReadableKeyValue(params.tokenid);
         return await getTokenBalance(balancekv.kv!, params.address);
     });
