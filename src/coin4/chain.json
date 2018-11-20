@@ -1,0 +1,65 @@
+{
+    "create":{
+        "program": "chain_host",
+        "args":[
+            "create",
+            "--package", "./dist/coin/chain", 
+            "--externalHandler",
+            "--dataDir", "./data/coin/genesis",
+            "--loggerConsole", 
+            "--loggerLevel", "debug",
+            "--genesisConfig", "./dist/coin/chain/genesis.json"
+        ]
+    },
+    "miner":{
+        "program": "chain_host",
+        "args":[
+            "miner",
+            "--genesis", "./data/coin/genesis",
+            "--coinbase", "12LKjfgQW26dQZMxcJdkj2iVP2rtJSzT88",
+            "--dataDir", "./data/coin/miner",
+            "--net tcp", 
+            "--host", "localhost", 
+            "--port","12312",
+            "--rpchost", "localhost",
+            "--rpcport", "18089",
+            "--loggerConsole",
+            "--loggerLevel", "debug",
+            "--feelimit", "10" 
+        ]
+    },
+    "peer":{
+        "program": "chain_host",
+        "args":[
+            "peer",
+            "--genesis", "./data/coin/genesis",
+            "--dataDir", "./data/coin/peer",
+            "--net", "tcp",
+            "--host", "localhost",
+            "--port", "12313",
+            "--peers", "localhost:12312",
+            "--loggerConsole", 
+            "--loggerLevel", "debug"
+        ]
+    },
+    "wallet":{
+        "program": "./dist/coin/wallet/wallet.js",
+        "args":[
+            "--secret", "21a744ac011e0457d67327f0361237e73181d4d21e25b1ca99a0a05e84533359",
+            "--host", "localhost", 
+            "--port", "18089",
+            "--run", "chain.getBalance()"
+        ]
+    },
+    "test":{
+        "type": "test",
+        "program": {
+            "windows":  "./node_modules/.bin/mocha.cmdnhjj∆ `q   ",
+            "linux": "./node_modules/.bin/mocha"
+        },
+        "args":[
+            "./dist/coin/test/test.js",
+            "--timeout", "600000"
+        ]
+    }
+}
