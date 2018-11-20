@@ -30,6 +30,7 @@ init(options: {
     }): Promise<ErrorCode>;
 ```
 初始化session，必须先于其他任何method调用之前调用
+
 参数
 + options
     + height 初始化之后的块高度
@@ -38,7 +39,7 @@ init(options: {
     + interval 块的时间间隔，指定块的timestamp增量
     + preBalance 指定每个地址的上的初始余额
 
-返回值
+返回值 错误码，0为成功
 
 ## method updateHeightTo
 ```typescript

@@ -1,12 +1,12 @@
 # handler.js
-handler.js文件是自定义链行为的入口，一个链必须存在该文件，且该文件必须导出一个registerHandler函数，这个链才能正常初始化并运行
+handler.js文件是自定义链行为的入口，一个链必须存在该文件，且该文件必须导出registerHandler函数，这个链才能正常初始化并运行
 
 registerHandler函数原型：
 ```typescript
 function registerHandler(handler: ValueHandler)
 ```
 
-开发者必须实现这个函数，使用ValueHandler提供的方法注册tx和view的处理函数，定义这条链的业务行为
+开发者必须实现这个函数，使用ValueHandler上的方法注册tx和view的处理函数，定义这条链的业务行为
 
 一个简单的例子
 ```typescript
@@ -33,7 +33,7 @@ export function registerHandler(handler: ValueHandler) {
 ```typescript
 (context: any) => Promise<ErrorCode>
 ```
-该函数用于初始化链时设置自定义信息，在调用host的create功能时被调用，返回0表示成功初始化，返回非0值会让create操作失败
+该函数用于初始化链时设置自定义信息，在调用host的create命令时被调用，返回0表示成功初始化，返回非0值会让create操作失败
 
 ## method addTX
 ```typescript
@@ -61,7 +61,7 @@ addViewMethod(name: string, listener: ViewListener)
 type TxListener = (context: any, params: any) => Promise<ErrorCode>;
 ```
 参数
-+ context 链的context对象，详情见ref_context.md文件
++ context 链的[context](./ref_context)对象
 + params transcation的input参数
 
 返回值
@@ -75,10 +75,8 @@ type TxPendingChecker = (tx: Transaction) => ErrorCode;
 
 用于判定一个transcation是否应该上链，开发者可以在这个函数中做一些上下文无关的检查，比如检查Transcation的input合法性，value和fee是否符合一些业务标准等。判定为不符合的tx可以在函数中返回非0值，该tx即会被miner抛弃，不会上链
 
-如果节点收到的某个block中含有会让TxPendingChecker返回非0值的
-
 参数
-+ tx 需要判定的transcation, 该transcation的类型为ValueTransaction的实际派生类型，与链共识有关, ValueTransaction具体参见ref_client.md中的描述
++ tx [transcation](./ref_client#ValueTransaction)实例
 
 返回值
 
@@ -93,7 +91,7 @@ view method的响应函数，client的view调用和chain的view调用会触发�
 
 参数
 
-+ context 链的viewcontext对象，详情见ref_context.md文件
++ context [viewcontext](./ref_context#ViewContext)实例
 + params view的params参数
 
 返回值

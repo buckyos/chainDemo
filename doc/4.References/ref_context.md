@@ -1,14 +1,14 @@
 # <a name="ExecutorContext">type ExecutorContext</a>
 ## member now: number
-执行context的block的时间戳
+当前block的时间戳
 
 ## member height: number
-执行context的block的块高度
+当前block的块高度
 
-# type TransactionContext
+# <a name="TransactionContext">type TransactionContext</a>
 派生自[ExecutorContext](#ExecutorContext)
 ## member caller: string
-执行交易的地址address
+发起该交易的地址
 
 ## member storage: IReadWritableDataBase
 可读写的数据存储对象
@@ -22,49 +22,51 @@ emit: (name: string, param?: any) => void;
 ```
 
 ## method createAddress
-创建一个地址
+生成新的地址
 ```typescript
 createAddress: () => string;
 ```
 
-# <a name='#ValueTransactionContext'>type ValueTransactionContext </a>
-用作发起tx(交易)的执行环境， 一般作为基类， 被具体的某个共识算法的TransactionContext去继承
+# <a name='ValueTransactionContext'>type ValueTransactionContext </a>
+派生自[TransactionContext](#TransactionContext)
 
 ## member value: BigNumber
-交易额度
+交易支出的金额
 
 ## member fee: BigNumber;
-手续费
+交易的手续费上限
 
 ## method getBalance
-获取某个地址(钱包)的余额
+获取某个地址的余额
 ```typescript
 getBalance: (address: string) => Promise<BigNumber>;
 ```
+
 ## method transferTo
-转账给某个地址(钱包)
+转账给某个地址
 ```typescript
 transferTo: (address: string, amount: BigNumber) => Promise<ErrorCode>;
 ```
 
 ## method cost
-扣除手续费， 如果余额不足是失败
+扣除指定金额的手续费， 当超出手续费上限时， 交易失败
 ```typescript
 cost: (fee: BigNumber) => ErrorCode;
 ```
 
 
 
-# <a name='#ViewContext'>type ViewContext </a>
+# <a name='ViewContext'>type ViewContext </a>
 用来查看storage里数据的执行环境， 一般用作基类，不会单独使用
+
 ## member storage: IReadableDataBase
+只读的数据存储对象
 
-
-# type ValueViewContext
+# <a name="ValueViewContext">type ValueViewContext</a>
 派生自[ViewContext](#ViewContext)
-获得一个查看storage数据(主要是blance)的执行环境
+获得一个查看storage数据的执行环境
 ## method  getBalance
-获取某个地址(钱包)的余额
+获取某个地址的余额
 ``` typescript
 // @param address 地址
 // @return Promise 余额
@@ -72,19 +74,17 @@ getBalance: (address: string) => Promise<BigNumber>
 ```
 
 
-
-
-# interface IReadableDataBase
+# <a name="IReadableDataBase">interface IReadableDataBase</a>
 接口 只读的数据存储对象
 
 ## method getReadableKeyValue
-获取一个只读的数据存储对象
+获取一个只读的key-value存储对象
 ```typescript
 // @param name 对象名字 类似表名
 getReadableKeyValue(name: string) => Promise<{ err: ErrorCode, kv?: IReadableKeyValue }>;
 ```
 
-# interface IWritableDataBase
+# <a name="IWritableDataBase">interface IWritableDataBase</a>
 接口 只写的数据存储对象
 
 ## method createKeyValue
@@ -94,13 +94,6 @@ getReadableKeyValue(name: string) => Promise<{ err: ErrorCode, kv?: IReadableKey
 createKeyValue(name: string): Promise<{err: ErrorCode, kv?: IReadWritableKeyValue}>;
 ```
 
-## example: demo dpos handler.ts中，使用createKeyValue创建了选举和选举信息两个storage
-```typescript
-    ...
-    await context.storage.createKeyValue('bid');
-    await context.storage.createKeyValue('bidInfo');
-    ...
-```
 
 ## method getReadWritableKeyValue
 获取一个只写的数据存储对象
@@ -109,7 +102,7 @@ createKeyValue(name: string): Promise<{err: ErrorCode, kv?: IReadWritableKeyValu
 getReadWritableKeyValue(name: string): Promise<{ err: ErrorCode, kv?: IReadWritableKeyValue }>;
 ```
 
-# interface IWritableKeyValue
+# <a name="IWritableKeyValue">interface IWritableKeyValue</a>
 可写的 key-value对象
 
 ps: 以下的函数可参照redis主要方法的使用方式
@@ -230,4 +223,90 @@ linsert(key: string, index: number, value: any): Promise<{ err: ErrorCode }>;
 lremove(key: string, index: number): Promise<{ err: ErrorCode, value?: any }>;
 ```
 
+
+# <a name="IReadableKeyValue">type IReadableKeyValue</a>
+## method get
+返回 key 所关联的字符串值。
+
+如果 key 不存在那么返回 null
+```typescript
+get(key: string): Promise<{ err: ErrorCode, value?: any }>;
+```
+
+## method hexists
+查看哈希表 key 中，给定域 field 是否存在。
+
+```typescript
+hexists(key: string, field: string): Promise<{ err: ErrorCode, value?: boolean}>;
+```
+## method hget
+返回哈希表 key 中给定域 field 的值。
+
+```typescript
+hget(key: string, field: string): Promise<{ err: ErrorCode, value?: any }>;
+```
+
+## method hmget
+返回哈希表 key 中，一个或多个给定域的值。
+
+如果给定的域不存在于哈希表，那么返回 null
+
+```typescript
+hmget(key: string, fields: string[]): Promise<{ err: ErrorCode, value?: any[] }>;
+```
+
+## method hlen
+返回哈希表 key 中域的数量。
+
+```typescript
+hlen(key: string): Promise<{ err: ErrorCode, value?: number }>;
+```
+
+## method hkeys
+返回哈希表 key 中的所有域。
+
+```typescript
+hkeys(key: string): Promise<{ err: ErrorCode, value?: string[] }>;
+```
+
+## method hvalues
+返回哈希表 key 中所有域的值。
+
+```typescript
+hvalues(key: string): Promise<{ err: ErrorCode, value?: any[] }>;
+```
+
+## method hgetall
+返回哈希表 key 中，所有的域和值
+
+```typescript
+hgetall(key: string): Promise<{ err: ErrorCode; value?: {key: string, value: any}[]; }>;
+```
+
+## method lindex
+返回列表 key 中，下标为 index 的元素。
+
+也可以使用负数下标，以 -1 表示列表的最后一个元素， -2 表示列表的倒数第二个元素，以此类推
+
+```typescript
+lindex(key: string, index: number): Promise<{ err: ErrorCode, value?: any }>;
+```
+
+## method llen
+返回列表 key 的长度。
+
+如果 key 不存在，则 key 被解释为一个空列表，返回 0 .
+
+如果 key 不是列表类型，返回一个错误。
+
+```typescript
+llen(key: string): Promise<{ err: ErrorCode, value?: number }>;
+```
+## method lrange
+返回列表 key 中指定区间内的元素，区间以偏移量 start 和 stop 指定。
+
+可以使用负数下标，以 -1 表示列表的最后一个元素， -2 表示列表的倒数第二个元素，以此类推
+```typescript
+lrange(key: string, start: number, stop: number): Promise<{ err: ErrorCode, value?: any[] }>;
+```
 

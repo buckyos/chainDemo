@@ -14,12 +14,12 @@ constructor(options: {host: string, port: number})
 ```typescript
 getBlock(params: {which: string|number|'lastest', transactions?: boolean}): Promise<{err: ErrorCode, block?: any, txs?: any[]}>;
 ```
-从host上取链上指定的块头信息
+从host上获取指定块
 
 参数
 + params
     + which 可以传入字符串格式的块hash，数字格式的块高度，或```'lastest'```字符串
-    + transactions 取块信息是是否也要块内所有transcation的信息，填入true时函数返回会变慢
+    + transactions 是否返回块中所有transcation的信息
 
 返回值
 + err 此次调用的错误码，错误码为0时表示成功取回，错误码非0时，不存在其他字段
@@ -124,10 +124,10 @@ on(event: 'tipBlock', listener: (block: any) => void): this;
 ## 成员变量
 - `address: string` 签名者地址，只有调用过sign()函数后，该参数才有意义
 - `method: string`  方法名，该参数必须填写，且handler.js中必须对应注册该名字的Listener
-- `nonce: number`   签名者的nonce，此参数的含义和以太坊的nonce相同，必须正确填写
+- `nonce: number`   签名者的nonce，此参数的含义和以太坊的nonce相同:新建交易nonce为由该地址发起的已经上联的交易个数，必须正确填写
 - `input: any`      方法的调用参数，必须是可序列化的
 - `value: BigNumber` 这个Transaction执行时，context可动用的币数，Listener开始执行时，对应的币数就会从签名者的地址上扣除
-- `fee: BigNumber`  该Transaction上链时，给打包者的手续费
+- `fee: BigNumber`  该Transaction上链时，出块节点可从该交易赚取的的手续费上限
 
 
 ## verifySignature
@@ -156,9 +156,7 @@ Object类型，成员变量如下：
 - `number: number` 块的高度
 - `timestamp: number` 块产生时的时间戳，以出块者的本地时间为准
 - `preBlock: string` 前一块的哈希值
-- `merkleRoot: string` 本块的merkle根哈希
 - `storageHash: string` 本块的存储哈希
-- `m_receiptHash: string` 本块的所有交易的receipts哈希值
 - `coinbase: string` 本块的coinbase地址
 
 当运行的是PoW共识时，块头信息会附加以下值：
