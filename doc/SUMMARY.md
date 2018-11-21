@@ -18,5 +18,4 @@
     * [debugger](4.References/ref_debugger.md)
     * [handler](4.References/ref_handler.md)
     * [Address tool](4.References/tool_address.md)
-    * [Debugger tool](4.References/tool_debuger.md)
     * [Host tool](4.References/tool_host.md)
